@@ -18,4 +18,4 @@ if(UNIX)
 	target_link_libraries(ape_thread_test pthread)
 endif()
 
-add_test(NAME run_thread_test COMMAND ape_thread_test )
+add_test(NAME run_thread_test COMMAND ape_thread_test WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>" )
