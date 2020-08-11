@@ -1,12 +1,12 @@
 #ifndef APE_THREAD_QUEUE_HPP
 #define APE_THREAD_QUEUE_HPP
+#include <ape/config.hpp>
+
 #include <type_traits>
 #include <mutex>
 #include <deque>
 #include <condition_variable>
 
-#include <gsl/gsl_assert>
-#include <ape/config.hpp>
 
 BEGIN_APE_NAMESPACE
 namespace thread{

@@ -38,15 +38,32 @@ if(${THREAD_NORMAL})
 		)
 	set (gsl_include_dir "${gsl_SOURCE_DIR}/include")
 
-	add_library(ape_thread INTERFACE)
-	add_library(Ape::thread ALIAS ape_thread )
-	target_compile_features(ape_thread INTERFACE cxx_std_17)
-	target_compile_definitions(ape_thread INTERFACE
-		$<$<CXX_COMPILER_ID:MSVC>:
-		_SCL_SECURE_NO_WARNINGS
-		_SILENCE_CXX17_UNCAUGHT_EXCEPTION_DEPRECATION_WARNING
-		>)
-	target_include_directories(ape_thread INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
+	set(sources
+		src/threadpool.cpp
+		)
+
+	if (DEFINED APE_SUPERPROJECT)
+		add_library(Ape::thread ALIAS ape )
+		target_sources(ape PRIVATE ${sources})
+	else()
+		option(APE_BUILD_SHARED "Enable shared library build" ON )
+		if (APE_BUILD_SHARED)
+			add_library(ape_thread SHARED ${sources})
+			target_compile_definitions(ape_thread PRIVATE APE_BUILD_SHARED) 
+		else()
+			add_library(ape_thread STATIC ${sources})
+			target_compile_definitions(ape_thread PRIVATE APE_BUILD_STATIC) 
+		endif()
+		add_library(Ape::thread ALIAS ape_thread )
+		target_compile_features(ape_thread PUBLIC cxx_std_17)
+		target_compile_definitions(ape_thread PUBLIC
+			$<$<CXX_COMPILER_ID:MSVC>:
+			_SCL_SECURE_NO_WARNINGS
+			_SILENCE_CXX17_UNCAUGHT_EXCEPTION_DEPRECATION_WARNING
+			>)
+		target_include_directories(ape_thread PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
+		target_link_libraries(ape_thread pthread)
+	endif()
 endif()
 
 if(${THREAD_INSTALL})
