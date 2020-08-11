@@ -22,17 +22,13 @@ namespace thread{
 		};
 
 		template <typename Func, typename ... Args>
-		void invoke_imp2(Func& f, Args& ... args) {
-			f(std::move(args)...);
-		}
-		template <typename Pack, std::size_t... Indices>
-		void invoke_imp(Pack& pack) {
-			invoke_imp2(std::get<Indices>(pack)...);
-		}
+		void invoke2_imp(Func& f, Args& ... args) {
+            f(std::move(args)...);
+        }
 
-		template <typename Pack, size_t... Indices>
-		 constexpr void invoke2(Pack& pack , std::index_sequence<Indices...>) noexcept {
-			invoke_imp<Pack, Indices...>(pack);
+        template <typename Pack, size_t... Indices>
+        void invoke2(Pack& pack, std::index_sequence<Indices...>) {
+            invoke2_imp(std::get<Indices>(pack)...);
 		}
 
 		 template <typename  T>
@@ -59,19 +55,14 @@ namespace thread{
 				}
 			};
 			
-			
-
 			std::promise<R> p;
 			auto future = p.get_future();
 
 			using pack_type = std::tuple<decltype(call), std::promise<R>, std::decay_t<F>, std::decay_t<Args>...>;
-
 			std::shared_ptr<pack_type> pack = std::make_shared< pack_type>(call, std::move(p), std::forward<F>(f), std::forward<Args>(args)...);
-
-			enqueue_([pack] {
-				auto& args_  = *pack;
-				detail::invoke2(*pack, std::make_index_sequence<3 + sizeof...(Args)>{});
-				});
+            enqueue_([=] {
+                detail::invoke2(*pack, std::make_index_sequence<3 + sizeof...(Args)>{});
+                });
 
 			return future;
 		}

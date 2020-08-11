@@ -19,29 +19,6 @@ namespace thread{
         typedef T value_type;
         typedef std::deque<value_type> queue_type;
         
-    private:
-        std::deque<value_type> m_queue;
-        mutable std::mutex m_mutex;
-        std::condition_variable m_condition_variable;
-        bool m_stopped{false};
-        
-        std::unique_lock<std::mutex> lock_self_() const {
-            return std::unique_lock<std::mutex>(m_mutex);
-        }
-
-        void notify_() { m_condition_variable.notify_one(); }
-        
-        bool pop_front_if_not_empty_(value_type& output) {
-            if (m_stopped || m_queue.empty())
-                return false;
-            
-            output = m_queue.front();
-            m_queue.pop_front();
-            return true;
-        }
-        
-    public:
-        
         /// default ctor
         /// \post isEmpty()
         queue() = default;
@@ -233,7 +210,26 @@ namespace thread{
             m_queue.clear();
             m_stopped = false;
         }
-        
+    private:
+        std::deque<value_type> m_queue;
+        mutable std::mutex m_mutex;
+        std::condition_variable m_condition_variable;
+        bool m_stopped{ false };
+
+        std::unique_lock<std::mutex> lock_self_() const {
+            return std::unique_lock<std::mutex>(m_mutex);
+        }
+
+        void notify_() { m_condition_variable.notify_one(); }
+
+        bool pop_front_if_not_empty_(value_type& output) {
+            if (m_stopped || m_queue.empty())
+                return false;
+
+            output = m_queue.front();
+            m_queue.pop_front();
+            return true;
+        }
     };
 
 }
