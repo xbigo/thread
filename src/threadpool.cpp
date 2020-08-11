@@ -10,6 +10,9 @@ namespace thread{
 		queue<task_type> m_tasks;
 		std::vector<std::thread> m_threads;
 
+		thread_pool_imp() {
+			m_tasks.stop();
+		}
 		~thread_pool_imp(){
 			m_tasks.clear();
 			m_tasks.stop();
@@ -72,6 +75,7 @@ namespace thread{
 		for(auto& t : self->m_threads)
 			t.join();
 		self->m_threads.clear();
+		self->m_tasks.reset();
 		for(std::size_t i = 0; i < self->m_count; ++i){
 			self->m_threads.emplace_back(worker);
 		}
@@ -88,7 +92,7 @@ namespace thread{
 	thread_pool::thread_pool() = default;
 	thread_pool::~thread_pool() = default;
 
-	std::shared_ptr<thread_pool> create(bool auto_start, std::size_t count){
+	std::shared_ptr<thread_pool> thread_pool::create(bool auto_start, std::size_t count){
 		auto ret = std::make_shared<thread_pool_imp>();
 		ret->m_count = std::max(count, std::size_t(1));
 		if (auto_start) ret->start();

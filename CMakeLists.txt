@@ -61,8 +61,15 @@ if(${THREAD_NORMAL})
 			_SCL_SECURE_NO_WARNINGS
 			_SILENCE_CXX17_UNCAUGHT_EXCEPTION_DEPRECATION_WARNING
 			>)
-		target_include_directories(ape_thread PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-		target_link_libraries(ape_thread pthread)
+		target_include_directories(ape_thread PUBLIC 
+			$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+			$<BUILD_INTERFACE:${gsl_include_dir}>
+			$<BUILD_INTERFACE:${ape_config_include_dir}>
+			$<INSTALL_INTERFACE:include>
+			)
+		if(UNIX)
+			target_link_libraries(ape_thread pthread)
+		endif()
 	endif()
 endif()
 
