@@ -45,6 +45,7 @@ if(${THREAD_NORMAL})
 	if (DEFINED APE_SUPERPROJECT)
 		add_library(Ape::thread ALIAS ape )
 		target_sources(ape PRIVATE ${sources})
+		set(target_library "ape")
 	else()
 		option(APE_BUILD_SHARED "Enable shared library build" ON )
 		if (APE_BUILD_SHARED)
@@ -61,16 +62,17 @@ if(${THREAD_NORMAL})
 			_SCL_SECURE_NO_WARNINGS
 			_SILENCE_CXX17_UNCAUGHT_EXCEPTION_DEPRECATION_WARNING
 			>)
-		target_include_directories(ape_thread PUBLIC 
-			$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
-			$<BUILD_INTERFACE:${gsl_include_dir}>
-			$<BUILD_INTERFACE:${ape_config_include_dir}>
-			$<INSTALL_INTERFACE:include>
-			)
+		set(target_library "ape_thread")
 		if(UNIX)
 			target_link_libraries(ape_thread pthread)
 		endif()
 	endif()
+	target_include_directories(${target_library}  PUBLIC 
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+		$<BUILD_INTERFACE:${gsl_include_dir}>
+		$<BUILD_INTERFACE:${ape_config_include_dir}>
+		$<INSTALL_INTERFACE:include>
+		)
 endif()
 
 if(${THREAD_INSTALL})
