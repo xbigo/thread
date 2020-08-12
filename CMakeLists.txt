@@ -40,6 +40,9 @@ if(${THREAD_NORMAL})
 
 	set(sources
 		src/threadpool.cpp
+		include/ape/thread/queue.hpp  
+		include/ape/thread/threadpool.hpp
+		include/ape/thread/threadpool.ipp
 		)
 
 	if (DEFINED APE_SUPERPROJECT)
