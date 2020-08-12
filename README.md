@@ -22,7 +22,7 @@ For MSVC:
 git clone https://github.com/xbigo/thread.git
 mkdir build
 cd build
-cmake -S ../thread -D BUILD_TESTING=1
+cmake -S ../thread -D BUILD_TESTING=1 -G "Visual Studio 16 2019"
 cmake --build .
 cmake --build . --target check
 cmake --build . --target install
