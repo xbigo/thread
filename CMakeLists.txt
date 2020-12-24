@@ -70,6 +70,9 @@ if(${THREAD_NORMAL})
 			target_link_libraries(ape_thread pthread)
 		endif()
 	endif()
+	if (MSVC)
+		target_compile_options(${target_library} PUBLIC "/Zc:__cplusplus")
+	endif()
 	target_include_directories(${target_library}  PUBLIC 
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
 		$<BUILD_INTERFACE:${gsl_include_dir}>
