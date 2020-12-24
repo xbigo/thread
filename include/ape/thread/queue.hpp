@@ -226,7 +226,7 @@ namespace thread{
             if (m_stopped || m_queue.empty())
                 return false;
 
-            output = m_queue.front();
+            output = std::move(m_queue.front());
             m_queue.pop_front();
             return true;
         }
