@@ -38,24 +38,22 @@ if(${THREAD_NORMAL})
 		)
 	set (gsl_include_dir "${gsl_SOURCE_DIR}/include")
 
-	set(sources
-		src/threadpool.cpp
-		include/ape/thread/queue.hpp  
-		include/ape/thread/threadpool.hpp
-		include/ape/thread/threadpool.ipp
-		)
+	set(sources src/threadpool.cpp)
+	set(headers queue.hpp threadpool.hpp threadpool.ipp)
+	list(TRANSFORM headers PREPEND "include/ape/thread/")
+	list(APPEND all_sources ${headers} ${sources})
 
 	if (DEFINED APE_SUPERPROJECT)
 		add_library(Ape::thread ALIAS ape )
-		target_sources(ape PRIVATE ${sources})
+		target_sources(ape PRIVATE ${all_sources})
 		set(target_library "ape")
 	else()
 		option(APE_BUILD_SHARED "Enable shared library build" ON )
 		if (APE_BUILD_SHARED)
-			add_library(ape_thread SHARED ${sources})
+			add_library(ape_thread SHARED ${all_sources})
 			target_compile_definitions(ape_thread PRIVATE APE_BUILD_SHARED) 
 		else()
-			add_library(ape_thread STATIC ${sources})
+			add_library(ape_thread STATIC ${all_sources})
 			target_compile_definitions(ape_thread PRIVATE APE_BUILD_STATIC) 
 		endif()
 		add_library(Ape::thread ALIAS ape_thread )
@@ -79,6 +77,11 @@ if(${THREAD_NORMAL})
 		$<BUILD_INTERFACE:${ape_config_include_dir}>
 		$<INSTALL_INTERFACE:include>
 		)
+
+	amun_fake_project(ape_thread_ 
+		SOURCES ${headers} src/dummy.cpp
+		INCLUDES include  ${gsl_include_dir} ${ape_config_include_dir}
+		FOLDER Libs)
 endif()
 
 if(${THREAD_INSTALL})
