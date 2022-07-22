@@ -52,13 +52,13 @@ if(${THREAD_NORMAL})
 		option(APE_BUILD_SHARED "Enable shared library build" ON )
 		if (APE_BUILD_SHARED)
 			add_library(ape_thread SHARED ${all_sources})
-			target_compile_definitions(ape_thread PRIVATE APE_BUILD_SHARED) 
+			target_compile_definitions(ape_thread PRIVATE APE_BUILD_SHARED)
 		else()
 			add_library(ape_thread STATIC ${all_sources})
-			target_compile_definitions(ape_thread PRIVATE APE_BUILD_STATIC) 
+			target_compile_definitions(ape_thread PRIVATE APE_BUILD_STATIC)
 		endif()
 		add_library(Ape::thread ALIAS ape_thread )
-		target_compile_features(ape_thread PUBLIC cxx_std_17)
+		target_compile_features(ape_thread PUBLIC cxx_std_20)
 		target_compile_definitions(ape_thread PUBLIC
 			$<$<CXX_COMPILER_ID:MSVC>:
 			_SCL_SECURE_NO_WARNINGS
@@ -72,17 +72,18 @@ if(${THREAD_NORMAL})
 	if (MSVC)
 		target_compile_options(${target_library} PUBLIC "/Zc:__cplusplus")
 	endif()
-	target_include_directories(${target_library}  PUBLIC 
+	target_include_directories(${target_library}  PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
 		$<BUILD_INTERFACE:${gsl_include_dir}>
 		$<BUILD_INTERFACE:${ape_config_include_dir}>
 		$<INSTALL_INTERFACE:include>
 		)
 
-	amun_fake_project(ape_thread_ 
+	amun_fake_project(ape_thread_
 		SOURCES ${headers} src/dummy.cpp
 		INCLUDES include  ${gsl_include_dir} ${ape_config_include_dir}
-		FOLDER Libs)
+		FOLDER Libs
+		FEATURES INTERFACE cxx_std_20)
 endif()
 
 if(${THREAD_INSTALL})
@@ -100,5 +101,3 @@ if(${THREAD_TEST})
 	amun_enable_testing()
 	add_subdirectory(test)
 endif()
-
-
