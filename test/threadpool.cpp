@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <ape/thread/threadpool.hpp>
 
 TEST_CASE("ape::thread::thread_pool", "[ape.thread.pool]"){
