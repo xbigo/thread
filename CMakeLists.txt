@@ -43,7 +43,7 @@ if(${THREAD_NORMAL})
 	set(headers queue.hpp threadpool.hpp threadpool.ipp)
 	list(TRANSFORM headers PREPEND "include/ape/thread/")
 	list(APPEND all_sources ${headers} ${sources})
-
+  
 	if (DEFINED APE_SUPERPROJECT)
 		add_library(Ape::thread ALIAS ape )
 		target_sources(ape PRIVATE ${all_sources})
@@ -79,8 +79,9 @@ if(${THREAD_NORMAL})
 		$<INSTALL_INTERFACE:include>
 		)
 
-	amun_fake_project(ape_thread_
-		SOURCES ${headers} src/dummy.cpp
+	amun_reorg_project(${target_library}
+		SOURCES ${headers}
+		PRIVATE_SOURCES src/dummy.cpp
 		INCLUDES include  ${gsl_include_dir} ${ape_config_include_dir}
 		FOLDER Libs
 		FEATURES INTERFACE cxx_std_20)
@@ -90,7 +91,7 @@ if(${THREAD_INSTALL})
 	amun_get_cmake_install_dir(THREAD_INSTALL_DIR)
 
 	if (NOT DEFINED APE_SUPERPROJECT)
-		amun_install_targets(${THREAD_INSTALL_DIR} ape_thread)
+		amun_install_targets(${THREAD_INSTALL_DIR} ${target_library})
 		amun_install_config_version(${THREAD_INSTALL_DIR} NOARCH)
 	endif()
 
