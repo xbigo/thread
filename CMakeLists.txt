@@ -82,7 +82,7 @@ if(${THREAD_NORMAL})
 	amun_reorg_project(${target_library}
 		SOURCES ${headers}
 		PRIVATE_SOURCES src/dummy.cpp
-		INCLUDES include  ${gsl_include_dir} ${ape_config_include_dir}
+		INCLUDES ../include  ${gsl_include_dir} ${ape_config_include_dir}
 		FOLDER Libs
 		FEATURES INTERFACE cxx_std_20)
 endif()
