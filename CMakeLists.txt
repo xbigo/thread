@@ -34,7 +34,7 @@ get_target_property(ape_config_include_dir ape_config INTERFACE_INCLUDE_DIRECTOR
 
 if(${THREAD_NORMAL})
 	amun_fetch_lib( gsl
-		GIT_REPOSITORY ../GSL.git
+		GIT_REPOSITORY ../../microsoft/GSL.git
 		GIT_TAG v3.1.0
 		)
 	set (gsl_include_dir "${gsl_SOURCE_DIR}/include")
